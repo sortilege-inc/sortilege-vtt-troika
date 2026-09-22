@@ -100,10 +100,14 @@ only hand list in the build) makes the shelf the book's own contents page. Every
 must be claimed by exactly one chapter or the build exits non-zero; the 36 `.actor` files are
 claimed by directory.
 
-**D3 — PROPOSED: the origin.** GitHub Pages from `main`, root, as the others; the custom domain
-is the owner's pick (TEETH: `teeth.`, Invisible Sun: `actuality.`). Nothing hard-codes one
-origin — the Worker's `ALLOWED_ORIGIN` is a comma list and `engine/config.js` is the one file
-a deployment edits. **Recommendation:** `troika.sortilege.online`.
+**D3 — (owner, 2026-09-22) `troika.sortilege.online`, and the repo made PUBLIC.** GitHub Pages
+from `main`, root, as the others; the Worker's `ALLOWED_ORIGIN` lists the custom domain and the
+github.io address behind it; `engine/config.js` names the deployed Worker. The repo had to be
+public for Pages on this plan (TEETH and Invisible Sun are), which publishes `data/` — the
+book's text verbatim — as the two siblings do; the owner took that call with the exposure stated.
+The domain's DNS is at **Namecheap**, where no credential lives on this machine, so the CNAME
+record (`troika` → `sortilege-inc.github.io`) is the owner's hand; GitHub reports the domain
+*verified* and will issue the certificate once it resolves, after which *Enforce HTTPS* unlocks.
 
 **D4 — the adventure is the campaign's module** (autonomous). *The Blancmange & Thistle* is the
 corpus's one `.arc`, so `defaultCampaign.modules = ['adventure']` and the GM page opens on its
@@ -166,13 +170,17 @@ server.
 | 13 | A possession that names a weapon on the Damage tables is written to the Weapons rows as well as the Inventory, so the damage roll can find its row ("a Knife" → the Knife row; "(Damage as Mace)" → Mace) | The sheet prints Weapons apart from the Inventory; the tables are the corpus's, the match is by name and shown ("as Knife · 2 2 2 2 4 8 10"). |
 | 14 | A spell row is one by the corpus's `Is Spell` flag **or** the printed "Spell –" prefix; the corpus now sets the flag from the prefix (`5b5046c`), and the 8 possessions split at a printed line-wrap were rejoined there too — both found by walking the creator | The flag the BASE declares was never set, so the cost was not charged; fixed in the generator, not in the tool, and the tool tolerates either. |
 | 15 | The local Worker runs on **8788**, not 8787: every VTT on this machine had used 8787 and two cannot share it, and another session's Invisible Sun Worker held it. `engine/config.js` `worker.local`, both launch entries, `package.json` and the Worker README say 8788; the Worker admits any localhost / 127.0.0.1 origin whatever the port | The one deployment file plus the launch entry; nothing else knows the port. |
+| 16 | The Worker was deployed and Pages enabled by `gh api` (`POST /pages` with `source main /`, `PUT /pages cname=`) rather than the web UI; the deploy commit (`f68c336`) carries the `CNAME` file GitHub would otherwise commit itself | The same result, reproducible from the shell; the visibility change was the owner's explicit call, not the tool's. |
 | 8 | Verification in the pane drove the real buttons by DOM click (`button.click()` on the control the GM would press) and read the DOM and `VttState` back, because element refs went stale on every panel redraw and screenshots came back black at the pane's viewport | The control exercised is the same; only the hand on it differs. Noted so the next build does not burn an hour on refs. |
 
 ## STOPPED HERE — to resume
 
-**M0–M5 landed 2026-09-22** and pushed. What remains is the owner's: **D3** (the origin) and the
-deploy — GitHub Pages from `main`, `cd worker && npx wrangler deploy`, `worker.deployed` in
-`engine/config.js`, `ALLOWED_ORIGIN` in `worker/wrangler.jsonc`. Local dev: `worker/` bundles (`npx wrangler deploy
+**M0–M5 landed and DEPLOYED 2026-09-22.** Worker: `https://sortilege-vtt-troika.sortilege.workers.dev`
+(version `e49a180c`; a room created from both allowed origins, a foreign origin refused 403).
+Pages: enabled from `main`, `cname troika.sortilege.online`. **Outstanding, the owner's:** the
+Namecheap CNAME `troika` → `sortilege-inc.github.io`; then *Enforce HTTPS* in the repo's Pages
+settings once GitHub's certificate lands. Redeploy the Worker after any change to `engine/ops.js`
+or `system/troika/ops.js` (`cd worker && npx wrangler deploy`). Local dev: `worker/` bundles (`npx wrangler deploy
 --dry-run` builds `index.js` with `setSceneCast` inside), launch entry `vtt-troika-worker`. **D3**
 (the origin) is the owner's pick before deploy.
 

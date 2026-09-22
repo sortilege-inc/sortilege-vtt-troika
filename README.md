@@ -5,7 +5,8 @@ the [Titterpig DSL corpus](../../Titterpig/DSL/titterpig-dsl-troika) — the who
 chapter, the Bestiary, the tables, *The Blancmange & Thistle*, and the GM's table to run it
 from. Plan, decisions and milestones: [PLAN.md](PLAN.md).
 
-Buildless static site (GitHub Pages). The site is the book; the GM's table is under `gm/` —
+Live at **https://troika.sortilege.online/** (once its DNS record is in; the github.io address
+behind it redirects there). Buildless static site (GitHub Pages). The site is the book; the GM's table is under `gm/` —
 the same engine TEETH's and Invisible Sun's tables run on, with Troika's own panels. Players
 join a session by room code on `gm/play.html`.
 
@@ -18,7 +19,8 @@ join a session by room code on `gm/play.html`.
 | M2 — the site: the book by chapter, the Bestiary, making a character, search | **landed** (2026-09-22) |
 | M3 — the GM's page: Adventure, Party, Inspector, Bestiary, Tables, Rules & Book, Log, Campaign; the table; the player's page | **landed** (2026-09-22) |
 | M4 — the character sheet derived from `ACTOR "Character"`, the creator (the Overview step by step), the roster, the live sheet and the rolls | **landed** (2026-09-22) |
-| M5 — sessions through the Worker (`wrangler dev` on 8788) | **landed** (2026-09-22); deploy and the origin (D3) are the owner's steps |
+| M5 — sessions through the Worker (`wrangler dev` on 8788) | **landed** (2026-09-22) |
+| Deploy — Worker at `sortilege-vtt-troika.sortilege.workers.dev`, Pages from `main`, `troika.sortilege.online` (D3) | **deployed** (2026-09-22); the DNS CNAME is the owner's |
 
 ## Running it
 
