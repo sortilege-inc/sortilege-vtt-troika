@@ -177,9 +177,11 @@ server.
 
 **M0–M5 landed and DEPLOYED 2026-09-22.** Worker: `https://sortilege-vtt-troika.sortilege.workers.dev`
 (version `e49a180c`; a room created from both allowed origins, a foreign origin refused 403).
-Pages: enabled from `main`, `cname troika.sortilege.online`. **Outstanding, the owner's:** the
-Namecheap CNAME `troika` → `sortilege-inc.github.io`; then *Enforce HTTPS* in the repo's Pages
-settings once GitHub's certificate lands. Redeploy the Worker after any change to `engine/ops.js`
+Pages: enabled from `main`, `cname troika.sortilege.online`; the owner added the Namecheap CNAME
+the same evening, GitHub's certificate was approved (Let's Encrypt, `CN=troika.sortilege.online`,
+to 2026-12-21) and **Enforce HTTPS is on**: `https://troika.sortilege.online/` answers 200 with
+the site, `http://` redirects 301 to it, the served `engine/config.js` names the deployed Worker.
+**LIVE.** Redeploy the Worker after any change to `engine/ops.js`
 or `system/troika/ops.js` (`cd worker && npx wrangler deploy`). Local dev: `worker/` bundles (`npx wrangler deploy
 --dry-run` builds `index.js` with `setSceneCast` inside), launch entry `vtt-troika-worker`. **D3**
 (the origin) is the owner's pick before deploy.
