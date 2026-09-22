@@ -46,7 +46,7 @@ verified in the browser by the main session.
 
 ## Decisions
 
-**D1 — PROPOSED: the corpus declares no player-character ACTOR.** The playbook derives the
+**D1 — (owner, 2026-09-22) DECIDED and landed in the corpus (`titterpig-dsl-troika` `bc21dc0`): `ACTOR "Character"` declared in the BASE via `gen_base.py`, as recommended below.** The recommendation as it was put: The playbook derives the
 sheet, the live sheet and the creator from the ACTOR type's property declarations, read at
 runtime (PLAYBOOK §1b); Invisible Sun's precedent (its D1, owner 2026-09-20) was to add the
 missing declarations to the corpus BASE as its own commit rather than hand-list a sheet in the
@@ -89,9 +89,10 @@ tool. Here there is nothing to extend: the only ACTOR is `Enemy`, which by the b
   generator and the BASE (VERSION bump per the bump rule), then `gates.sh` rerun. The
   alternative — a hand-listed sheet in `system/troika/sheet.js` — is the drifting second copy
   the playbook forbids.
-- *Until decided:* the sheet, the creator, the live sheet and the roll are **not built**; the
-  Party panel and the player's page hold a character file generically and say so. Everything
-  else in this scaffold stands without it.
+- *Now:* the BASE declares `#tro5Character000001 ACTOR "Character"` with exactly the fields
+  above (`^"Background"` a hash-bound reference to the Background type); `check_shape`
+  asserts it. **M4 is unblocked.** Until M4 lands, the Party panel and the player's page still
+  hold a character file generically.
 
 **D2 — the site's "books" are the chapters of the one book** (autonomous, tool/method). The
 corpus keeps each chapter in its own file; `build/build_data.py`'s file → chapter map (the
@@ -140,7 +141,7 @@ assets/css/              the look
 | M1 | `build/` generates `data/` from the corpus: `build_data.py` (file → chapter map; TEETH's shapes for DESCRIPTION, TABLE, ENTRIES, arcs; the self-registering data files), `verify_data.py` both directions over every subdirectory, `check_shape.py`, `build.sh` | **landed 2026-09-22** (`1256514`) — `bash build/build.sh`: 47 corpus files → 11 chapters, 315 entities; `verify_data: 1248 strings — 0 uncovered · 0 unsourced`; `check_shape: OK (42 assertions)`; `node --check` on every data file |
 | M2 | The site: the book by chapter (outline from the DEF tree, rule numbers, tables as tables, backgrounds, spells with cost, the adventure by phase and scene), the bestiary, search; the character-creation chapter with its 36 backgrounds | **landed 2026-09-22** — browser on 8737, through the real controls: the shelf lists the 10 chapters + the BASE from `index.js`; The Rules' outline nests 1 › 1.1 › 1.2 … 11 by the book's numbering and *1.1 Roll Under* reads verbatim under its crumbs; on *15.3 Initiative is Different for Enemies* the printed "(5.5)" is a link and clicking it opened *5.5 Enemies*; *Melee Weapons* renders its 14 rows cell for cell with the printed footnote and its 14 weapon entries; *Alzabo* shows Skill 10 · Stamina 21 · Initiative 4 · Armour 1, its six mien lines and its text; the adventure lists its two routes and 13 scenes and *1st Floor Passenger: The Old Lady* reads verbatim; Spells opens as 74 cards; *Making a character* prints the Overview and the two essays and **Roll d66** gave `33` and its Background card. One defect found and fixed on the way (a rule with no sub-rules threw on `appendChild(null)`); two corpus defects found and reported, not patched (decision 6) |
 | M3 | The GM's page: the engine's shell over Troika's panels — the Adventure tracker, Party (files held generically until D1), Inspector, Bestiary (put in the scene), Tables (rolled on), Rules & Book, Log, Campaign; the table and the player's page wired | **landed 2026-09-22** — browser, a fresh tab at 1400 px, through the real controls: the shell opens on Adventure · Party · Inspector with *The Blancmange & Thistle · 0 of 13 scenes done* and the first scene's text; clicking *2nd Floor Passenger: The Gas Form* made it current (`state.current.adventure` = its id); the Bestiary listed *36 in the Bestiary*, *Goblin* opened in the Inspector with Skill 5 · Stamina 6 · Initiative 1 · Armour 1 and its six mien lines, and **Put in 2nd Floor Passenger: The Gas Form** stored `cast[scene] = [Goblin]`, showed the chip *Goblin ×* and *1 in it* on the tracker; Tables listed the six endpaper tables and **Roll** on *The OOPS! Table* logged row 36 verbatim; Rules & Book searched "Luck" → 48 results and the first opened *3.2 Gaining and Losing Luck* in the Inspector; the Log shows the roll; the pack carries `cast` beside the engine's keys; localStorage held only the campaign list and the default campaign. `gm/vtt.html?scene=…` opened titled *Troika! — 2nd Floor Passenger: The Gas Form* with all 13 scenes and Goblin offered as a token; `gm/play.html` showed *Join the table*. 0 console errors on every page in a fresh tab. Under node the system op applies and the role rule holds (GM permits `setSceneCast`, a player does not) |
-| M4 | **(after D1)** the character sheet derived from the ACTOR, the creator (the Overview walked step by step: the three rolls, the baseline possessions, a d66 Background), the live sheet and the 2d6 Roll Under / Roll Versus | |
+| M4 | **(D1 landed 2026-09-22 — next)** the character sheet derived from the `Character` ACTOR, the creator (the Overview walked step by step: the three rolls, the baseline possessions, a d66 Background), the live sheet and the 2d6 Roll Under / Roll Versus | |
 | M5 | Sessions proven with `wrangler dev`; deploy is the owner's step (D3) | |
 
 One commit per milestone, pushed; each proven in the browser by the main session through the
@@ -158,13 +159,15 @@ server.
 | 5 | D2, D4, D5 above | — |
 | 6 | Two defects in the corpus's `.arc` found while reading the rendered scenes — 15 doubled bold-italic runs (`***sweet old lady*** ***sweet old lady***`) and the bonbon table read by height across its two columns — are reported to `titterpig-dsl-troika/TODO.md` (`e8c0633` there) and shown here as they are | `data/` is generated; the tool never patches the corpus's text (ground rules). |
 | 7 | The GM's **Tables** panel rolls on an endpaper table by picking one printed row uniformly at random and logging it verbatim | The book's d66 over 36 rows is uniform; the row is the corpus's, the pick is this tool's, and nothing about a roll is decided beyond that. |
+| 9 | **(owner, 2026-09-22: "fix the arc defects and the doubled bold-italic runs and the Actor definition")** All three fixed **in the conversion, not in the corpus text**: `extract.lines_of` now merges the overlapping lines PyMuPDF splits at a face change — the cause of the 33 doubled emphasis runs (every weight, not only bold-italic), of stat lines split in two and of seams read as a second column; `gen_arc` reads the two tables printed inside a scene (the bonbons, *d6 Mental Anguish*) from the page geometry into `TABLE` blocks on their SCENEs; `gen_base` declares the Character ACTOR. Regenerated; 20 pages changed, every diff reviewed as a repair; `qa.py` 0 lost / 0 invented, `qa_dsl` 0 not in the book, `units.json` unchanged (323), corpus gates green; VERSION `0.5.1` on the five touched files (base, introduction, rules, tables, arc) | The corpus is generated; a hand edit to a generated file is clobbered on the next run and hides the cause. Re-extraction was safe because PyMuPDF 1.28.2 (installed for this) reproduces the stored `pages_json` byte for byte. |
+| 10 | The VTT build carries a SCENE's `TABLE` (`build_scene.table`), `check_shape` asserts the two scene tables and the Character ACTOR (45 assertions), and `TroikaEntity.scene` renders the table under the scene's text | The bonbon table had rendered as interleaved paragraphs; now it is a table, cell for cell, like the endpapers. |
 | 8 | Verification in the pane drove the real buttons by DOM click (`button.click()` on the control the GM would press) and read the DOM and `VttState` back, because element refs went stale on every panel redraw and screenshots came back black at the pane's viewport | The control exercised is the same; only the hand on it differs. Noted so the next build does not burn an hour on refs. |
 
 ## STOPPED HERE — to resume
 
-**M0–M3 landed 2026-09-22** and pushed. The next milestone is **M4, which waits on D1** (the
-player-character ACTOR — the recommendation and a draft declaration are above); **M5** (sessions
-with `wrangler dev`) can go ahead independently: `worker/` bundles (`npx wrangler deploy
+**M0–M3 landed 2026-09-22** and pushed; **D1 is decided and in the corpus** (`bc21dc0`), so the
+next milestone is **M4** (the sheet derived from `ACTOR "Character"`, the creator, the live sheet,
+the roll). **M5** (sessions with `wrangler dev`) can go ahead independently: `worker/` bundles (`npx wrangler deploy
 --dry-run` builds `index.js` with `setSceneCast` inside), launch entry `vtt-troika-worker`. **D3**
 (the origin) is the owner's pick before deploy.
 

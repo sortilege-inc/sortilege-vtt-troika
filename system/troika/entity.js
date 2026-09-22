@@ -231,6 +231,7 @@ window.TroikaEntity = (function () {
     return el('article', { class: 'entity scene' }, [
       o.bare ? null : el('h3', {}, [s.name, el('span', { class: 'etype' }, ['scene'])]),
       prose(s.desc),
+      table(s.table),                    // the table the book prints inside the scene
     ]);
   }
 

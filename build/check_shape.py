@@ -91,11 +91,12 @@ def main():
 
     # ── the tables are read cell for cell ──
     tables = by_type.get("Table", [])
-    # a Background prints a Mien table of its own, so the TABLE blocks are not all in tables.ttrpg
+    # a Background prints a Mien table of its own, so the TABLE blocks are not all in
+    # tables.ttrpg; the arc's scene tables are not Table entities and are asserted below
     check("tables with a TABLE block", len([t for t in tables if t["table"]]),
-          grep_count(corpus, '^\\s*TABLE {', ALL))
+          grep_count(corpus, '^\\s*TABLE {', ["*.ttrpg"]))
     check("table rows", sum(len(t["table"]["rows"]) for t in tables if t["table"]),
-          grep_count(corpus, '^\\s*ROW \\[', ALL))
+          grep_count(corpus, '^\\s*ROW \\[', ["*.ttrpg"]))
     check("every row as wide as its columns",
           len([t for t in tables if t["table"] and all(len(r) == len(t["table"]["columns"]) for r in t["table"]["rows"])]),
           len([t for t in tables if t["table"]]))
@@ -162,6 +163,13 @@ def main():
     ids = {s["id"] for s in a["scenes"]}
     check("every reference names a scene", len([r for r in refs if r in ids]), len(refs))
     check("every scene with text", len([s for s in a["scenes"] if s["desc"]]), len(a["scenes"]))
+    check("scenes carrying a printed table", len([s for s in a["scenes"] if s.get("table")]),
+          grep_count(corpus, '^\\s*TABLE {', P + "blancmange-and-thistle.arc"))
+    check("every scene table's rows as wide as its columns",
+          len([s for s in a["scenes"] if s.get("table") and all(len(r) == len(s["table"]["columns"]) for r in s["table"]["rows"])]),
+          len([s for s in a["scenes"] if s.get("table")]))
+    check("the player character ACTOR declared in the BASE",
+          len([e for e in ents.values() if e["form"] == "ACTOR" and e["key"] == "Character" and e["book"] == "base"]), 1)
 
     # ── the printed sheet's labels, in printed order ──
     sheet = next((e for e in ents.values() if e["key"] == "Character Sheet"), None)

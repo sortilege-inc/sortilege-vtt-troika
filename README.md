@@ -17,7 +17,7 @@ join a session by room code on `gm/play.html`.
 | M1 — `build/` generates `data/` from the corpus; the gate both ways; the shape check | **landed** (2026-09-22) |
 | M2 — the site: the book by chapter, the Bestiary, making a character, search | **landed** (2026-09-22) |
 | M3 — the GM's page: Adventure, Party, Inspector, Bestiary, Tables, Rules & Book, Log, Campaign; the table; the player's page | **landed** (2026-09-22) |
-| M4 — the character sheet, the creator, the live sheet and the roll | waits on **D1** (PLAN.md): the corpus declares no player-character ACTOR |
+| M4 — the character sheet, the creator, the live sheet and the roll | next: D1 landed 2026-09-22 (`ACTOR "Character"` in the corpus BASE) |
 | M5 — sessions through the Worker; deploy | Worker bundles; deploy and the origin (D3) are the owner's steps |
 
 ## Running it

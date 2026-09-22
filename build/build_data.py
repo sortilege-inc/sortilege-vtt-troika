@@ -297,6 +297,7 @@ def build_scene(s):
         "id": arg(s, "hash"), "name": arg(s, "caret"),
         "type": kwstr(body, "TYPE"),
         "desc": kwstr(body, "DESCRIPTION"),
+        "table": table_of(body),           # a table the book prints inside the scene
         "guidance": guidance_of(body),
         "refs": refs_of(body),
     }
