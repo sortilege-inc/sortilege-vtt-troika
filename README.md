@@ -18,7 +18,7 @@ join a session by room code on `gm/play.html`.
 | M2 — the site: the book by chapter, the Bestiary, making a character, search | **landed** (2026-09-22) |
 | M3 — the GM's page: Adventure, Party, Inspector, Bestiary, Tables, Rules & Book, Log, Campaign; the table; the player's page | **landed** (2026-09-22) |
 | M4 — the character sheet derived from `ACTOR "Character"`, the creator (the Overview step by step), the roster, the live sheet and the rolls | **landed** (2026-09-22) |
-| M5 — sessions through the Worker; deploy | Worker bundles; deploy and the origin (D3) are the owner's steps |
+| M5 — sessions through the Worker (`wrangler dev` on 8788) | **landed** (2026-09-22); deploy and the origin (D3) are the owner's steps |
 
 ## Running it
 
@@ -26,7 +26,9 @@ join a session by room code on `gm/play.html`.
 python3 -m http.server 8737
 ```
 
-then open `http://localhost:8737/`.
+then open `http://localhost:8737/`. For sessions, `cd worker && npm install && npx wrangler dev --port 8788`
+(the app on localhost talks to it); a player on the same machine tests from a second origin,
+`http://127.0.0.1:8737/gm/play.html`.
 
 ## Where the content comes from
 

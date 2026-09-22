@@ -4,8 +4,24 @@
     {
       "name": "vtt-troika",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8737"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8737"
+      ],
       "port": 8737
+    },
+    {
+      "name": "vtt-troika-worker",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "wrangler",
+        "dev",
+        "--port",
+        "8788"
+      ],
+      "port": 8788,
+      "cwd": "worker"
     }
   ]
 }

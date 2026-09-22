@@ -16,7 +16,7 @@ window.VttConfig = {
   // `wrangler dev`; deployed, to the URL below. Empty = sessions disabled.
   worker: {
     deployed: '',
-    local: 'http://localhost:8787',
+    local: 'http://localhost:8788',
   },
 };
 window.VttConfig.workerUrl = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? window.VttConfig.worker.local : window.VttConfig.worker.deployed;
