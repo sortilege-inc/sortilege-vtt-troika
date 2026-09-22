@@ -98,12 +98,13 @@
     const draw = () => {
       container.innerHTML = '';
       const party = S().party || [];
-      container.appendChild(el('div', { class: 'chiprow' }, [characterLoader('Load character file(s)…', ''), el('span', { class: 'muted small' }, ['a JSON file with a name; the sheet waits on D1'])]));
+      container.appendChild(el('div', { class: 'chiprow' }, [characterLoader('Load character file(s)…', ''), el('span', { class: 'muted small' }, ['from the site’s character creator'])]));
       if (!party.length) container.appendChild(el('div', { class: 'empty' }, ['No one in the party yet.']));
       party.forEach((m) => container.appendChild(el('div', { class: 'member' }, [
         el('button', { class: 'card static-card', type: 'button', onclick: () => Panels.select({ kind: 'party', id: m.id }) }, [
           el('div', { class: 'card-name' }, [m.name]),
           el('div', { class: 'card-sub muted small' }, [Sys().memberSubtitle(m)]),
+          el('div', { class: 'card-desc' }, ['Stamina ' + window.TroikaSheet.current(m, 'Stamina') + ' / ' + (m.character || {}).Stamina + ' · Luck ' + window.TroikaSheet.current(m, 'Luck') + ' / ' + (m.character || {}).Luck]),
         ]),
         el('div', { class: 'member-ops' }, [
           button('file', () => Sys().downloadCharacter(m), 'ghost tiny'),
@@ -244,7 +245,7 @@
       container.innerHTML = '';
       const log = (S().log || []).slice().reverse();
       if (!log.length) return container.appendChild(el('div', { class: 'empty' }, ['Nothing logged yet.']));
-      log.forEach((x) => container.appendChild(el('div', { class: 'roll-line' }, [
+      log.forEach((x) => container.appendChild(x.kind === 'roll' ? window.TroikaSheet.rollLine(x) : el('div', { class: 'roll-line' }, [
         el('span', { class: 'roll-who' }, [x.kind || 'note']), x.text || JSON.stringify(x),
       ])));
     };

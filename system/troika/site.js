@@ -208,39 +208,17 @@ window.VttSiteTabs = (function () {
     apply();
   }
 
-  // ── making a character: the chapter, its backgrounds ───────────────
-  // The sheet and the creator are derived from an ACTOR the corpus does not yet declare
-  // (PLAN.md D1); until it does, this tab is the chapter itself, verbatim, and a d66 roll.
+  // ── making a character: the creator over the roster (system/troika/creator.js) ──
   function renderCharacters(container, path, ctx) {
-    const page = el('div', { class: 'page' });
-    container.appendChild(page);
-    const chapter = D.top('characters').find((e) => e.key === 'Character Creation');
-    const bgs = D.byType('Background', ['characters']).slice().sort((a, b) => String(D.val(a, 'Roll')).localeCompare(String(D.val(b, 'Roll'))));
     const openId = path[0] && D.entity(path[0]) ? path[0] : null;
     if (openId) {
+      const page = el('div', { class: 'page' });
+      container.appendChild(page);
       page.appendChild(el('div', { class: 'crumbs' }, [el('a', { href: ctx.href('characters', []) }, ['Making a character']), ' › ', D.entity(openId).name]));
       page.appendChild(E.render(D.entity(openId)));
       return;
     }
-    page.appendChild(el('h2', {}, ['Making a character']));
-    if (chapter) page.appendChild(E.render(chapter, { bare: true }));
-    page.appendChild(el('div', { class: 'callout muted small' }, [
-      'The sheet and the step-by-step creator are derived from the corpus’s character type, which the corpus does not declare yet (PLAN.md, D1). Until it does, the chapter stands as the book prints it.',
-    ]));
-    // d66: roll a d6 twice, in order
-    const rolled = el('div', {});
-    const roll = () => {
-      const d = () => 1 + Math.floor(Math.random() * 6);
-      const code = String(d()) + String(d());
-      const bg = bgs.find((b) => String(D.val(b, 'Roll')) === code);
-      rolled.innerHTML = '';
-      rolled.appendChild(el('div', { class: 'muted small' }, ['d66 → ' + code]));
-      if (bg) rolled.appendChild(E.card(bg, () => Site().go('characters', [bg.id])));
-    };
-    page.appendChild(el('h4', {}, ['The Background Table']));
-    page.appendChild(el('div', { class: 'chiprow' }, [el('button', { class: 'btn', type: 'button', onclick: roll }, ['Roll d66']), el('span', { class: 'muted small' }, [bgs.length + ' backgrounds'])]));
-    page.appendChild(rolled);
-    page.appendChild(el('div', { class: 'cards' }, bgs.map((bg) => E.card(bg, () => Site().go('characters', [bg.id])))));
+    window.TroikaCreator.render(container, path, ctx);
   }
 
   // ── search everywhere ──────────────────────────────────────────────
