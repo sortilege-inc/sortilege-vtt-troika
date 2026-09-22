@@ -9,6 +9,17 @@ Buildless static site (GitHub Pages). The site is the book; the GM's table is un
 the same engine TEETH's and Invisible Sun's tables run on, with Troika's own panels. Players
 join a session by room code on `gm/play.html`.
 
+## Status
+
+| Milestone | State |
+|---|---|
+| M0 — repo skeleton: the engine, the parser, the Worker, the config | **landed** (2026-09-22) |
+| M1 — `build/` generates `data/` from the corpus; the gate both ways; the shape check | **landed** (2026-09-22) |
+| M2 — the site: the book by chapter, the Bestiary, making a character, search | **landed** (2026-09-22) |
+| M3 — the GM's page: Adventure, Party, Inspector, Bestiary, Tables, Rules & Book, Log, Campaign; the table; the player's page | **landed** (2026-09-22) |
+| M4 — the character sheet, the creator, the live sheet and the roll | waits on **D1** (PLAN.md): the corpus declares no player-character ACTOR |
+| M5 — sessions through the Worker; deploy | Worker bundles; deploy and the origin (D3) are the owner's steps |
+
 ## Running it
 
 ```bash
@@ -34,6 +45,24 @@ bash build/build.sh            # build → verify both directions → check shap
 | `build/build_data.py` | One `data/<chapter>.js` per chapter and `data/index.js`. Holds the file → chapter map — the only hand-written list in the build — and refuses to run if any corpus file is claimed by no chapter. |
 | `build/verify_data.py` | The gate, both directions: every string and caret name the corpus prints reaches `data/`, and every string in `data/` came from the corpus. |
 | `build/check_shape.py` | What the gate cannot see: that a string landed on the right *field*. Every assertion is against a count grepped from the corpus. |
+
+## Layout
+
+```
+index.html               the site: the book by chapter, the Bestiary, making a character, search
+build/                   the generator and its gates
+data/                    GENERATED — window.TROIKA.books / .entities / .index
+engine/                  system-agnostic: bus, ops, state, render, the data loader, panels, the
+                         app shell, session, the table, the player's page, the site shell
+system/troika/           the Troika! module: data.js (accessors), entity.js (an entity as the
+                         book holds it), site.js (the tabs); for the table: ops.js (the system's
+                         own ops), table.js (the table adapter), panels.js (the panels)
+gm/                      the GM's page, the table (vtt.html), the player's page (play.html) —
+                         each carries <base href="../">
+worker/                  the session rooms (Cloudflare Worker + Durable Object); deploy with
+                         `npx wrangler deploy`, then set engine/config.js worker.deployed
+assets/css/              the look: a black band, a warm page, three inks
+```
 
 ## Rights
 
