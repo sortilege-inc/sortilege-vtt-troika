@@ -173,6 +173,25 @@ server.
 | 16 | The Worker was deployed and Pages enabled by `gh api` (`POST /pages` with `source main /`, `PUT /pages cname=`) rather than the web UI; the deploy commit (`f68c336`) carries the `CNAME` file GitHub would otherwise commit itself | The same result, reproducible from the shell; the visibility change was the owner's explicit call, not the tool's. |
 | 8 | Verification in the pane drove the real buttons by DOM click (`button.click()` on the control the GM would press) and read the DOM and `VttState` back, because element refs went stale on every panel redraw and screenshots came back black at the pane's viewport | The control exercised is the same; only the hand on it differs. Noted so the next build does not burn an hour on refs. |
 
+## Family standards (PLAYBOOK §4b, owner 2026-09-24)
+
+Ported from sortilege-vtt-l5r5e (I19) as system-free engine files, so this repo's `system/` is
+untouched but for its site tabs:
+
+1. **Not crawled** — `robots.txt` (the AI crawlers by name, then `*`) and a robots meta tag on every page.
+2. **The GM's material in the GM tabs, in the pack** — `engine/gm-text.js` (the GM Markdown with its
+   SET / OPEN / SOURCE tags, sections with an editor, notes, search) and `engine/gm-panes.js`
+   (Overview with rulings and free notes, Scenes with sessions, beats and questions for the table,
+   Threads, Places, People); their ops are local, never sent to a session's room
+   (`engine/ops.js` LOCAL, `engine/session.js`). The seed now fills by id and never re-adds what the
+   GM removed (`engine/state.js`); `hidePanes` / `paneOrder` (`engine/panels.js`).
+3. **A gate in front of /gm/** — `VttConfig.gmGate` (`engine/app.js`), once per tab.
+4. **The books off the public site** — `siteBooks: false`; every site tab but the dice is marked
+   `books`; the GM turns them on per browser in the new Settings pane. With every tab closed the
+   site says so. The book data stays publicly served (owner: fine for now).
+
+**Landed 2026-09-24** — localhost:8737 — the site: one tab, the closed-books page, the robots tag; /gm/: the gate, Enter, the six new panes; a thread with [OPEN] saved and drawn; no console errors but an old saved session's WebSocket to a local Worker that was not running.
+
 ## STOPPED HERE — to resume
 
 **M0–M5 landed and DEPLOYED 2026-09-22.** Worker: `https://sortilege-vtt-troika.sortilege.workers.dev`
