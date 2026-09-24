@@ -1,8 +1,8 @@
 # sortilege-vtt-troika — plan and decision log
 
 A virtual tabletop for **Troika! Numinous Edition** (Daniel Sell, Melsonian Arts Council), built
-on the Titterpig corpus `titterpig-dsl-troika/0.5`. Its shape follows `sortilege-vtt-teeth`'s
-`PLAYBOOK.md` and the Invisible Sun build that applied it second; both are read-only reference —
+on the Titterpig corpus `titterpig-dsl-troika/0.5`. Its shape follows the family
+`PLAYBOOK.md` (in `~/Sortilege/VTT/`, beside the VTT repos) and the Invisible Sun build that applied it second; both are read-only reference —
 nothing in either repo is modified here. Sixth in the line — Wyldwolf Axis, NOVA Open, City of
 Winter, TEETH, Invisible Sun.
 
