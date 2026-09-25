@@ -238,8 +238,8 @@ window.VttSiteTabs = (function () {
 
   return [
     { id: 'book', label: 'The book', render: renderBook, books: true },
-    { id: 'bestiary', label: 'Bestiary', render: renderBestiary, books: true },
-    { id: 'characters', label: 'Making a character', render: renderCharacters, books: true },
+    { id: 'bestiary', label: 'Bestiary', render: renderBestiary },
+    { id: 'characters', label: 'Making a character', render: renderCharacters },
     { id: 'search', label: 'Search', render: renderSearch, books: true },
   ];
 })();
