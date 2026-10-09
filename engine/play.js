@@ -27,6 +27,14 @@
       return 'sheet';
     }
   })();
+  const FEED_KEY = (CFG.storagePrefix || 'sortilege-vtt') + ':play:feed';
+  let feedOpen = (() => {
+    try {
+      return sessionStorage.getItem(FEED_KEY) !== '0';
+    } catch (e) {
+      return true;
+    }
+  })();
   const frame = el('iframe', { class: 'play-table', title: 'The table' });
   const tableWrap = el('div', { class: 'play-table-wrap' }, [frame]);
   const bannerEl = el('div', { class: 'play-banner' });
@@ -43,8 +51,21 @@
   }
   function applyMode(seated) {
     const m = seated ? mode : 'sheet';
+    const was = MODES.find(([k]) => document.body.classList.contains('mode-' + k));
     MODES.forEach(([k]) => document.body.classList.toggle('mode-' + k, m === k));
     if (m !== 'sheet' && !frame.getAttribute('src')) frame.setAttribute('src', CFG.pages.table + '?view=player');
+    // the frame's size changed with the view: fit the map to it once the layout has settled
+    else if (m !== 'sheet' && (!was || was[0] !== m)) fitFrame();
+  }
+  function fitFrame() {
+    setTimeout(() => {              // a timer, not an animation frame: it fires in a background tab too
+      try {
+        const t = frame.contentWindow && frame.contentWindow.VttTable;
+        if (t) t.fit();
+      } catch (e) {
+        /* not ours to reach */
+      }
+    }, 50);
   }
   function modeBar(cls) {
     return el('div', { class: 'mode-bar ' + (cls || '') }, MODES.map(([k, label]) => {
@@ -169,14 +190,24 @@
         button('Release character', () => Session.unclaim(m.id), 'ghost'),
       ]);
     // everyone's rolls and named actions, newest first — the GM's log as the room shares it
-    const feedItems = (State.state.log || []).slice(split ? -5 : -10).reverse();
+    const feedItems = (State.state.log || []).slice(split ? -30 : -10).reverse();
     const feed = el('section', { class: 'table-feed' }, [
       el('h4', {}, ['At the table', el('span', { class: 'muted' }, [feedItems.length ? '' : ' · nothing rolled yet'])]),
       el('div', { class: 'roll-log' }, feedItems.map((x) => x.kind === 'roll' && Sys.rollLine ? Sys.rollLine(x) : el('div', { class: 'roll-line' + (x.kind === 'roll' ? '' : ' action') }, [x.text || `${x.who || ''} · ${x.axis || ''} ${x.band || ''}`.trim()]))),
     ]);
     const clocks = (State.state.clocks || []).filter((c) => c.visible !== false);
     const strip = clocks.length ? el('div', { class: 'clock-strip' }, clocks.map((c) => el('div', { class: 'clock-row' }, [el('div', { class: 'track-head' }, [el('span', { class: 'track-name' }, [c.name]), el('span', { class: 'muted' }, [`${c.filled} / ${c.segments}`])]), el('div', { class: 'boxes clock' }, Array.from({ length: c.segments }, (_, i) => el('span', { class: 'box' + (i < c.filled ? ' on' : '') })))]))) : null;
-    return el('div', { class: 'play-card wide' + (split ? ' compact' : '') }, [bar, strip, split ? null : feed, Sys.liveSheet(m, { player: true, compact: split }), split ? feed : null]);
+    // full page: the feed in its own column on the right; beside the map: the sheet above, the
+    // rolls in a pane of their own below (the bottom third), each with its own scroll
+    if (split) {
+      const toggle = button(feedOpen ? 'hide' : 'show', () => { feedOpen = !feedOpen; try { sessionStorage.setItem(FEED_KEY, feedOpen ? '1' : '0'); } catch (e) { /* no storage */ } render(); }, 'ghost tiny');
+      const pane = el('section', { class: 'feed-pane' + (feedOpen ? '' : ' closed') }, [
+        el('div', { class: 'feed-pane-head' }, [el('h4', {}, ['At the table', el('span', { class: 'muted' }, [feedItems.length ? ` · ${feedItems.length}` : ' · nothing rolled yet'])]), toggle]),
+        feedOpen ? el('div', { class: 'feed-pane-body' }, [el('div', { class: 'roll-log' }, feedItems.map((x) => x.kind === 'roll' && Sys.rollLine ? Sys.rollLine(x) : el('div', { class: 'roll-line' + (x.kind === 'roll' ? '' : ' action') }, [x.text || `${x.who || ''} · ${x.axis || ''} ${x.band || ''}`.trim()])))]) : null,
+      ]);
+      return el('div', { class: 'play-card wide compact split-panes' }, [el('div', { class: 'sheet-pane' }, [bar, strip, Sys.liveSheet(m, { player: true, compact: true })]), pane]);
+    }
+    return el('div', { class: 'play-card wide with-feed' }, [el('div', { class: 'sheet-col' }, [bar, strip, Sys.liveSheet(m, { player: true })]), el('aside', { class: 'feed-col' }, [feed])]);
   }
 
   function render() {
@@ -218,8 +249,12 @@
   });
 
   render();
-  if (params.get('s') && !Session.current().active) {
-    Session.join(params.get('s'));
+  // a join link joins its room — also when this tab is still seated in another room from last time
+  const linked = (params.get('s') || '').toUpperCase();
+  const cur = Session.current();
+  if (linked && (!cur.active || (cur.info && cur.info.code !== linked))) {
+    if (cur.active) Session.leave();
+    Session.join(linked);
     render();
   }
 })();
